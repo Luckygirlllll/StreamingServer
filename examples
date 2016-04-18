@@ -1,0 +1,58 @@
+    var buffer = new Buffer("Simply Easy Learning", "utf-8");
+    // var buffer = new ArrayBuffer(16);
+    var intArray = new Int16Array(buffer);
+    console.log("intArray: " + intArray);
+_________________________________________________________
+
+
+
+    // преобразователь Buffer into ArrayBuffer
+    function toArrayBuffer(buffer) {
+        var ab = new ArrayBuffer(buffer.length);
+        var view = new Uint8Array(ab);
+        for (var i = 0; i < buffer.length; ++i) {
+            view[i] = buffer[i];
+        }
+        return ab;
+    }
+
+    function manageMessage(message, flags) {
+
+        // Variant 1
+        // if (flags.binary == true && message instanceof Buffer){
+        //  	               var ab = toArrayBuffer(message);
+        //  	               var ar = new Float32Array(ab);
+        //  	               for (var i = 0; i < ar.length; ++i) console.log("Variant 1: Float32Array["+i+"]:" + ar[i]);
+        // 		   		return ar;
+        // 		   		console.log("Ar: "+ar);
+        //  	           }
+
+        // Variant 2
+        console.log("Тестируем разные endian: big endian & little endian")
+        for (var i = 0; i< message.byteLength; i += 4){
+            //    console.log(" BE: "+message.readFloatBE(i) + "  LE: " + message.readFloatLE(i))
+        }
+
+
+        // создаем массив и заносим в него значения с помощью LE:
+        var length = message.byteLength/4;
+        ar2 = new Float32Array(length);
+        for (var i = 0; i< length-1; ++i){
+            ar2[i] = message.readFloatLE( i*4);
+
+            console.log("Variant 2: Float32Array["+i+"]:" + ar2[i]);
+            //   ws.send(ar2, {binary: true, mask: true});
+
+        }
+        //обработка случаев, когда не бинарник, а json
+        // ws.send(ar2, {binary: true, mask: true});
+        console.log("Ar2: " + ar2);
+    }
+
+_________________________________________________________
+
+    function invoke(message, flags) {
+        ws.send(intArray, {binary: true, mask: true});
+    }
+
+_________________________________________________________
